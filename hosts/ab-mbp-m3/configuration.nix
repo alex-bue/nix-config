@@ -5,7 +5,7 @@
   ...
 }:
 let
-  inherit (lib.alex) enabled;
+  inherit (lib.alex) enabled disabled;
 in
 {
   imports = [
@@ -45,12 +45,12 @@ in
         dockerDesktop = enabled;
         ghostty = enabled;
         googleChrome = enabled;
-        hiddenbar = enabled;
+        hiddenbar = disabled;
         iina = enabled;
         karabinerElements = enabled;
         logiOptions = enabled;
         obsidian = enabled;
-        onedrive = enabled;
+        onedrive = disabled;
         raycast = enabled;
         scrollReverser = enabled;
         skim = enabled;

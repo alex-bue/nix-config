@@ -1,4 +1,9 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mine.home-manager.shared;
   user = config.mine.user;
@@ -12,6 +17,7 @@ in
         bash-completion
         starship
         tmux
+        sesh
         zoxide
         zsh-powerlevel10k
         chezmoi
