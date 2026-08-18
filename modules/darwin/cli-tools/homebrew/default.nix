@@ -1,4 +1,9 @@
-{ lib, config, inputs, ... }:
+{
+  lib,
+  config,
+  inputs,
+  ...
+}:
 let
   cfg = config.mine.cli-tools.homebrew;
 in
@@ -15,7 +20,7 @@ in
       onActivation = {
         autoUpdate = true;
         upgrade = true;
-        cleanup = "zap";
+        cleanup = "none";
       };
     };
 
@@ -23,6 +28,12 @@ in
       enable = true;
       autoMigrate = true;
       mutableTaps = true;
+      trust = {
+        formulae = [ ];
+        casks = [ ];
+        commands = [ ];
+        taps = [ "nikitabobko/tap" ];
+      };
       user = config.system.primaryUser;
     };
   };

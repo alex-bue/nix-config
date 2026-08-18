@@ -39,10 +39,12 @@ in
         anydesk = enabled;
         betterdisplay = enabled;
         bitwarden = enabled;
+        calibre = enabled;
         codex = enabled;
         dbeaverCommunity = enabled;
         discord = enabled;
         dockerDesktop = enabled;
+        firefox = enabled;
         ghostty = enabled;
         googleChrome = enabled;
         hiddenbar = disabled;
