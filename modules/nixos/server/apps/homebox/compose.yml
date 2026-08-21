@@ -1,0 +1,15 @@
+services:
+  homebox:
+    image: ghcr.io/sysadminsmedia/homebox:latest-hardened
+    container_name: homebox
+    restart: unless-stopped
+    environment:
+      HBOX_LOG_LEVEL: info
+      HBOX_LOG_FORMAT: text
+      HBOX_WEB_MAX_UPLOAD_SIZE: 10
+      HBOX_OPTIONS_ALLOW_ANALYTICS: "false"
+      HBOX_AUTH_API_KEY_PEPPER: ${HBOX_AUTH_API_KEY_PEPPER?required}
+    volumes:
+      - ./data:/data
+    ports:
+      - "127.0.0.1:3100:7745"

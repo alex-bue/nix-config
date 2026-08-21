@@ -1,4 +1,6 @@
 host := `scutil --get LocalHostName 2>/dev/null || hostname -s`
+server := "homeserver"
+server_target := "ab@homeserver"
 
 default:
     @just --list
@@ -14,6 +16,14 @@ build:
 # Build + activate current Darwin config
 switch:
     sudo darwin-rebuild switch --flake .#{{ host }}
+
+# Build the homeserver config on the homeserver
+server-build:
+    nixos-rebuild build --flake .#{{ server }} --build-host {{ server_target }}
+
+# Build + activate the homeserver config on the homeserver
+server-switch:
+    nixos-rebuild switch --flake .#{{ server }} --target-host {{ server_target }} --build-host {{ server_target }} --use-remote-sudo
 
 # Update all flake inputs
 update:
@@ -55,4 +65,6 @@ alias b := build
 alias s := switch
 alias mac := switch
 alias build-mac := build
+alias sb := server-build
+alias ss := server-switch
 alias bv := build-vm

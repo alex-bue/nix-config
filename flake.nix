@@ -20,6 +20,11 @@
       url = "github:zhaofengli/nix-homebrew";
     };
 
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -67,6 +72,13 @@
         specialArgs = { inherit inputs lib; };
         modules = [
           ./hosts/nixos-vm/configuration.nix
+        ];
+      };
+
+      nixosConfigurations."homeserver" = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs lib; };
+        modules = [
+          ./hosts/homeserver/configuration.nix
         ];
       };
     };
