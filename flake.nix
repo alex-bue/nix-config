@@ -131,9 +131,7 @@
           formatting = pkgs.runCommand "check-nix-formatting" { nativeBuildInputs = [ pkgs.nixfmt ]; } ''
             cp -r ${./.} source
             chmod -R +w source
-            find source -name '*.nix' \
-              ! -path 'source/hosts/nixos-vm/hardware-configuration.nix' \
-              -print0 | xargs -0 nixfmt --check
+            find source -name '*.nix' -print0 | xargs -0 nixfmt --check
             touch $out
           '';
         }

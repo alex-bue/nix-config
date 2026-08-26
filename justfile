@@ -35,7 +35,7 @@ gc:
 
 # Format Nix and just files
 fmt:
-    rg --files -0 -g '*.nix' -g '!hosts/nixos-vm/hardware-configuration.nix' | xargs -0 nix fmt
+    rg --files -0 -g '*.nix' | xargs -0 nix fmt
     just --unstable --fmt
 
 [private]
