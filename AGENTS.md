@@ -4,9 +4,10 @@
 
 This repository is a Nix flake for macOS and NixOS host configuration.
 
-- `flake.nix` defines inputs and exposes `darwinConfigurations.ab-mbp-m3` and `nixosConfigurations.nixos-vm`.
-- `hosts/<host>/configuration.nix` contains host-specific settings and selects modules through `mine.*` options.
-- `modules/darwin/`, `modules/nixos/`, `modules/home/`, and `modules/shared/` contain reusable modules. Platform import files auto-load nested `default.nix` files.
+- `flake.nix` defines inputs and exposes system and standalone Home Manager configurations.
+- `hosts/<host>/default.nix` is the complete system configuration for one concrete machine. It explicitly selects system modules and Home Manager environment.
+- `homes/` contains complete user environments that compose reusable Home Manager capabilities. These environments also support standalone Home Manager targets.
+- `modules/darwin/`, `modules/nixos/`, `modules/home/`, and `modules/shared/` contain explicitly imported reusable modules.
 - `lib/default.nix` contains small shared helpers, currently `lib.alex.enabled` and `lib.alex.disabled`.
 - `flake.lock` pins dependency revisions; update it intentionally.
 
@@ -22,10 +23,12 @@ This repository is a Nix flake for macOS and NixOS host configuration.
 ## Coding Style & Naming Conventions
 
 - Format Nix with `nixfmt` if available; keep two-space indentation and the existing brace layout.
-- Use one module per directory with a `default.nix` file so auto-imports continue to work.
+- Prefer shallow feature modules such as `docker.nix`; use per-host directories because machine configurations commonly include hardware, disk, or networking files.
+- Keep imports explicit. A file must not become active merely because it exists.
 - Define feature switches as `options.mine.<area>.<name>.enable = lib.mkEnableOption "...";`.
 - Gate module config with `config = lib.mkIf cfg.enable { ... };`.
-- Prefer host files for enable/disable decisions; keep reusable modules free of host-specific assumptions.
+- Make system feature decisions in concrete host files. Extract shared composition only after multiple hosts genuinely reuse it.
+- Import one complete `homes/*.nix` environment from each host or standalone Home Manager output; importing a Home Manager feature module enables that capability.
 
 ## Testing Guidelines
 
@@ -41,4 +44,3 @@ There is no separate test suite. Treat evaluation and builds as the validation p
 - Conventional prefixes such as `feat:` and `refactor:` are present but not required; use them when they clarify scope.
 - Pull requests should describe the affected host or module path, list validation commands run, and mention any `flake.lock` updates.
 - Keep unrelated formatting, package updates, and behavior changes in separate commits.
-

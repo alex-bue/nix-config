@@ -46,6 +46,14 @@ build-vm:
 vm:
     sudo nixos-rebuild switch --flake .#nixos-vm
 
+# Build a standalone Home Manager environment
+home-build environment:
+    home-manager build --flake ".#{{ environment }}"
+
+# Build + activate a standalone Home Manager environment
+home-switch environment:
+    home-manager switch --flake ".#{{ environment }}"
+
 # Format the justfile itself
 fmt:
     just --unstable --fmt

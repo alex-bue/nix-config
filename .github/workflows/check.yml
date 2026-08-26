@@ -1,0 +1,56 @@
+name: Check
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: check-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  evaluate:
+    name: Evaluate and format
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: DeterminateSystems/determinate-nix-action@v3.22.2
+      - run: nix flake check --print-build-logs
+
+  darwin:
+    name: Build Darwin
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: DeterminateSystems/determinate-nix-action@v3.22.2
+      - name: Build system
+        run: nix build .#darwinConfigurations.ab-mbp-m3.system --no-link --print-build-logs
+
+  nixos:
+    name: Build NixOS
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: DeterminateSystems/determinate-nix-action@v3.22.2
+      - name: Free runner disk space
+        run: |
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+      - name: Build system
+        run: nix build .#nixosConfigurations.nixos-vm.config.system.build.toplevel --no-link --print-build-logs
+
+  wsl:
+    name: Build WSL Home Manager
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: DeterminateSystems/determinate-nix-action@v3.22.2
+      - run: nix build '.#homeConfigurations."ab@personal-wsl".activationPackage' --no-link --print-build-logs
