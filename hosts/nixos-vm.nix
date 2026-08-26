@@ -13,8 +13,7 @@
 
   home-manager.users.${config.mine.user.name}.imports = [
     ../profiles/home/default.nix
-    ../modules/home/niri.nix
-    ../modules/home/noctalia.nix
+    ../profiles/home/linux-desktop.nix
   ];
 
   system.stateVersion = "24.11";
@@ -31,6 +30,8 @@
   mine.user = {
     enable = true;
     name = "alex";
+    alias = "Alexander Büscher";
+    email = "alexanderbuescher@outlook.com";
     homeDir = "/home/alex";
     shell.package = pkgs.zsh;
     extraGroups = [

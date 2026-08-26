@@ -29,7 +29,6 @@ in
       ghostty = enabled;
       wezterm = enabled;
     };
-    cli-tools.git = enabled;
     desktop = {
       greetd = enabled;
       niri = enabled;

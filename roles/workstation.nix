@@ -9,9 +9,6 @@ in
 
   mine = {
     user.home-manager = enabled;
-    system = {
-      fonts = enabled;
-      utils = enabled;
-    };
+    system.fonts = enabled;
   };
 }

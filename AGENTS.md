@@ -4,9 +4,11 @@
 
 This repository is a Nix flake for macOS and NixOS host configuration.
 
-- `flake.nix` defines inputs and exposes `darwinConfigurations.ab-mbp-m3` and `nixosConfigurations.nixos-vm`.
-- `hosts/<host>/configuration.nix` contains host-specific settings and selects modules through `mine.*` options.
-- `modules/darwin/`, `modules/nixos/`, `modules/home/`, and `modules/shared/` contain reusable modules. Platform import files auto-load nested `default.nix` files.
+- `flake.nix` defines inputs and exposes system and standalone Home Manager configurations.
+- `hosts/<host>.nix` contains final machine-specific settings and imports reusable system roles.
+- `roles/` composes reusable system capabilities between hosts and feature modules.
+- `profiles/home/` composes Home Manager capabilities independently of system roles.
+- `modules/darwin/`, `modules/nixos/`, `modules/home/`, and `modules/shared/` contain explicitly imported reusable modules.
 - `lib/default.nix` contains small shared helpers, currently `lib.alex.enabled` and `lib.alex.disabled`.
 - `flake.lock` pins dependency revisions; update it intentionally.
 
@@ -22,10 +24,11 @@ This repository is a Nix flake for macOS and NixOS host configuration.
 ## Coding Style & Naming Conventions
 
 - Format Nix with `nixfmt` if available; keep two-space indentation and the existing brace layout.
-- Use one module per directory with a `default.nix` file so auto-imports continue to work.
+- Prefer shallow modules such as `docker.nix`; use a directory only when a module genuinely needs supporting files.
+- Keep imports explicit. A file must not become active merely because it exists.
 - Define feature switches as `options.mine.<area>.<name>.enable = lib.mkEnableOption "...";`.
 - Gate module config with `config = lib.mkIf cfg.enable { ... };`.
-- Prefer host files for enable/disable decisions; keep reusable modules free of host-specific assumptions.
+- Prefer hosts and roles for system feature decisions; importing a Home Manager module enables that user capability.
 
 ## Testing Guidelines
 
@@ -41,4 +44,3 @@ There is no separate test suite. Treat evaluation and builds as the validation p
 - Conventional prefixes such as `feat:` and `refactor:` are present but not required; use them when they clarify scope.
 - Pull requests should describe the affected host or module path, list validation commands run, and mention any `flake.lock` updates.
 - Keep unrelated formatting, package updates, and behavior changes in separate commits.
-

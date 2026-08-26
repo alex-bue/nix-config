@@ -99,18 +99,25 @@
           user = {
             name = "ab";
             homeDir = "/home/ab";
+            alias = "Alexander Büscher";
+            email = "alexanderbuescher@outlook.com";
           };
           modules = [ ./profiles/home/default.nix ];
         };
       };
 
       homeModules = {
+        aerospace = ./modules/home/aerospace.nix;
         cli = ./modules/home/cli.nix;
         development = ./modules/home/development.nix;
         dms = import ./modules/home/dms.nix { inherit inputs; };
+        ghostty = ./modules/home/ghostty.nix;
+        git = ./modules/home/git.nix;
         niri = import ./modules/home/niri.nix { inherit inputs; };
         noctalia = import ./modules/home/noctalia.nix { inherit inputs; };
         shell = ./modules/home/shell.nix;
+        tmux = ./modules/home/tmux.nix;
+        wezterm = ./modules/home/wezterm.nix;
       };
 
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);

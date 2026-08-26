@@ -12,6 +12,7 @@
 
   home-manager.users.${config.mine.user.name}.imports = [
     ../profiles/home/default.nix
+    ../profiles/home/darwin-desktop.nix
   ];
 
   networking.hostName = "ab-mbp-m3";
@@ -25,6 +26,8 @@
   mine.user = {
     enable = true;
     name = "ab";
+    alias = "Alexander Büscher";
+    email = "alexanderbuescher@outlook.com";
     homeDir = "/Users/ab";
     shell.package = pkgs.zsh;
   };
