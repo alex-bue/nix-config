@@ -9,12 +9,15 @@ let
 in
 {
   imports = [
-    ../../modules/darwin/import.nix
-    ../../modules/shared/import.nix
-    ../../modules/home/import.nix
+    ../../modules/darwin
+    ../../modules/shared
   ];
 
   config = {
+    home-manager.users.${config.mine.user.name}.imports = [
+      ../../profiles/home/ab-mbp-m3.nix
+    ];
+
     networking.hostName = "ab-mbp-m3";
     nixpkgs.hostPlatform = "aarch64-darwin";
 

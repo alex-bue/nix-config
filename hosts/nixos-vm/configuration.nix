@@ -5,17 +5,20 @@
   ...
 }:
 let
-  inherit (lib.alex) enabled disabled;
+  inherit (lib.alex) enabled;
 in
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/nixos/import.nix
-    ../../modules/shared/import.nix
-    ../../modules/home/import.nix
+    ../../modules/nixos
+    ../../modules/shared
   ];
 
   config = {
+    home-manager.users.${config.mine.user.name}.imports = [
+      ../../profiles/home/nixos-vm.nix
+    ];
+
     system.stateVersion = "24.11";
     time.timeZone = "Europe/Copenhagen";
 
@@ -54,12 +57,7 @@ in
         git = enabled;
       };
       desktop = {
-        niri = {
-          enable = true;
-          home = true;
-        };
-        noctalia = enabled;
-        dms = disabled;
+        niri = enabled;
         greetd = enabled;
         portal = enabled;
         session = enabled;

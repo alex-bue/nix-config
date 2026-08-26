@@ -1,0 +1,39 @@
+{ pkgs, ... }:
+{
+  home.packages = with pkgs; [
+    bash-completion
+    starship
+    tmux
+    sesh
+    zoxide
+    zsh-powerlevel10k
+    chezmoi
+    neovim
+    yazi
+    bitwarden-cli
+    docker
+    docker-compose
+    gh
+    just
+    lazygit
+    nixfmt
+    statix
+    tree-sitter
+    cargo
+    go
+    nodejs_24
+    openjdk
+    pipx
+    python3
+    php
+    rustc
+    gcc
+    ffmpeg
+    ghostscript
+    graphviz
+    imagemagick
+    poppler
+    tex-fmt
+    texliveFull
+  ];
+}
