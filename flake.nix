@@ -113,7 +113,9 @@
         dms = import ./modules/home/dms.nix { inherit inputs; };
         ghostty = ./modules/home/ghostty.nix;
         git = ./modules/home/git.nix;
-        niri = import ./modules/home/niri.nix { inherit inputs; };
+        niri =
+          { pkgs, ... }:
+          import ./modules/home/niri.nix { inherit inputs pkgs; };
         noctalia = import ./modules/home/noctalia.nix { inherit inputs; };
         shell = ./modules/home/shell.nix;
         tmux = ./modules/home/tmux.nix;
