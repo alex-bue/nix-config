@@ -1,57 +1,74 @@
 # Nix configuration
 
-This flake manages concrete macOS and NixOS machines plus standalone Home
-Manager environments for systems such as Ubuntu WSL.
+This flake manages the `ab-mbp-m3` macOS host, the `nixos-vm` NixOS host,
+and the standalone `ab@personal-wsl` Home Manager configuration.
 
-## Structure
+## Layout
 
 ```text
-flake output
-  -> hosts/<machine>/default.nix
-       -> modules/{darwin,nixos,shared}/
-       -> homes/<environment>.nix
-            -> modules/home/
+flake.nix                 Flake inputs and exported configurations
+hosts/<host>/             Complete macOS or NixOS host configurations
+homes/                    Complete Home Manager environments
+modules/darwin/           Reusable nix-darwin modules
+modules/nixos/            Reusable NixOS modules
+modules/home/             Reusable Home Manager modules
+modules/shared/           Modules shared by system platforms
+lib/                      Small repository helpers
+docs/                     Supporting documentation
 ```
 
-- `hosts/` contains complete system configurations. A host explicitly imports
-  and enables every system capability it needs.
-- `homes/` contains complete user environments. The same environment can be
-  embedded in a system host or used by standalone Home Manager.
-- `modules/` contains reusable feature implementations. A module is inactive
-  until a host or home environment explicitly imports it.
+Hosts and home environments explicitly import the modules they use. Adding a
+file under `modules/` does not enable it automatically.
 
-## Common commands
+## Commands
+
+The [`justfile`](justfile) is the command-line entry point. Its `build` and
+`switch` recipes use `nh` and select the appropriate backend for macOS, NixOS,
+or standalone Home Manager based on the current system.
 
 ```sh
-just check
-just build
-just switch
-just build-vm
-just home-build 'ab@personal-wsl'
-just home-switch 'ab@personal-wsl'
+just                  # list available recipes
+just build            # build the current host
+just switch           # build and activate the current host
+just check            # evaluate all flake checks
+just fmt              # format Nix and just files
+just update           # update every flake input
+just update-one nixpkgs
+just upgrade          # update, check, and switch
+just gc               # keep five generations and at least seven days
 ```
 
-## Add a system machine
+Pass a target when it cannot be inferred or when selecting another
+configuration for the current platform:
 
-1. Create `hosts/<hostname>/default.nix` and keep hardware, disk, or networking
+```sh
+just build nixos-vm             # on NixOS
+just switch 'ab@personal-wsl'   # on non-NixOS Linux
+```
+
+On non-NixOS Linux, `build` and `switch` require a Home Manager target argument
+or `NH_HOME_CONFIG`.
+
+## Adding a host
+
+1. Create `hosts/<hostname>/default.nix`, keeping hardware, disk, and networking
    files beside it.
-2. Explicitly import the required platform and feature modules in that host.
-3. Select one complete Home Manager environment from `homes/`.
-4. Add the host to `nixosConfigurations` or `darwinConfigurations` in
+2. Explicitly import the required platform and feature modules.
+3. Select one complete environment from `homes/` for Home Manager.
+4. Export the host from `darwinConfigurations` or `nixosConfigurations` in
    `flake.nix`.
-5. Run `nix flake check` and build the new host output.
+5. Run `just fmt`, `just check`, and `just build <hostname>`.
 
-Keep composition in the host until multiple machines genuinely share a
-substantial set of system decisions. Extract shared composition only when that
-duplication exists.
+Keep composition in the concrete host until multiple hosts genuinely share the
+same system decisions.
 
-## Add a standalone home
+## Adding a standalone home
 
-1. Reuse an environment such as `homes/personal.nix`, or add a new complete
-   environment such as `homes/work.nix`.
-2. Add a `homeConfigurations."user@target"` entry in `flake.nix` with the
-   target system, username, and home directory.
-3. Activate it with `just home-switch 'user@target'`.
+1. Reuse a complete environment in `homes/`, or add a new one.
+2. Add a `homeConfigurations."user@target"` entry in `flake.nix` with its
+   system, user details, and environment module.
+3. Run `just fmt`, `just check`, and `just build 'user@target'` on a non-NixOS
+   Linux system.
 
 See [Home Manager activation](docs/home-manager.md) for activation ownership
 and the boundary with chezmoi.

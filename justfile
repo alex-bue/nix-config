@@ -1,66 +1,82 @@
-host := `scutil --get LocalHostName 2>/dev/null || hostname -s`
+set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
 
 default:
     @just --list
 
-# Evaluate flake outputs and checks
+# Build the current machine or Home Manager profile without activating it
+build target="":
+    @just _nh build {{ quote(target) }}
+
+# Build and activate the current machine or Home Manager profile
+switch target="":
+    @just _nh switch {{ quote(target) }}
+
+# Evaluate every flake check
 check:
     nix flake check
-
-# Build Darwin config, but don't activate it
-build:
-    darwin-rebuild build --flake .#{{ host }}
-
-# Build + activate current Darwin config
-switch:
-    sudo darwin-rebuild switch --flake .#{{ host }}
 
 # Update all flake inputs
 update:
     nix flake update
 
-# Update one input, e.g. `just update-one nixpkgs`
+# Update one flake input, e.g. `just update-one nixpkgs`
 update-one input:
-    nix flake update {{ input }}
+    nix flake update {{ quote(input) }}
 
-# Update inputs, verify, then activate
-upgrade: update check switch
+# Update inputs, run checks, and activate the current configuration
+upgrade:
+    just update
+    just check
+    just switch
 
-# Show Darwin generations
-generations:
-    darwin-rebuild --list-generations
-
-# Roll back to previous Darwin generation
-rollback:
-    sudo darwin-rebuild --rollback
-
-# Garbage collect old Nix store paths
+# Remove old generations and store paths
 gc:
-    nix-collect-garbage -d
+    nh clean all --keep-since 7d --keep 5
 
-# Build the NixOS VM system closure without switching
-build-vm:
-    nix build .#nixosConfigurations.nixos-vm.config.system.build.toplevel
-
-# Apply the NixOS VM configuration
-vm:
-    sudo nixos-rebuild switch --flake .#nixos-vm
-
-# Build a standalone Home Manager environment
-home-build environment:
-    home-manager build --flake ".#{{ environment }}"
-
-# Build + activate a standalone Home Manager environment
-home-switch environment:
-    home-manager switch --flake ".#{{ environment }}"
-
-# Format the justfile itself
+# Format Nix and just files
 fmt:
+    rg --files -0 -g '*.nix' | xargs -0 nix fmt
     just --unstable --fmt
 
-alias c := check
+[private]
+_nh action target:
+    #!/usr/bin/env bash
+    action={{ quote(action) }}
+    target={{ quote(target) }}
+
+    case "$(uname -s)" in
+        Darwin)
+            if [[ -n "$target" ]]; then
+                nh darwin "$action" -H "$target"
+            else
+                nh darwin "$action"
+            fi
+            ;;
+        Linux)
+            if [[ -e /etc/NIXOS ]]; then
+                if [[ -n "$target" ]]; then
+                    nh os "$action" -H "$target"
+                else
+                    nh os "$action"
+                fi
+            elif [[ -n "$target" ]]; then
+                nh home "$action" -c "$target"
+            elif [[ -n "${NH_HOME_CONFIG:-}" ]]; then
+                nh home "$action" -c "$NH_HOME_CONFIG"
+            else
+                echo "No Home Manager configuration specified." >&2
+                echo "Use: just $action <configuration>" >&2
+                exit 1
+            fi
+            ;;
+        *)
+            echo "Unsupported operating system: $(uname -s)" >&2
+            exit 1
+            ;;
+    esac
+
 alias b := build
 alias s := switch
-alias mac := switch
-alias build-mac := build
-alias bv := build-vm
+alias c := check
+alias u := update
+alias up := upgrade

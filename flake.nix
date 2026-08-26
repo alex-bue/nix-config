@@ -21,7 +21,7 @@
     };
 
     noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
+      url = "github:noctalia-dev/noctalia-shell/v4.7.7";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.noctalia-qs.follows = "noctalia-qs";
     };
@@ -113,7 +113,9 @@
         dms = import ./modules/home/dms.nix { inherit inputs; };
         ghostty = ./modules/home/ghostty.nix;
         git = ./modules/home/git.nix;
-        niri = import ./modules/home/niri.nix { inherit inputs; };
+        niri =
+          { pkgs, ... }:
+          import ./modules/home/niri.nix { inherit inputs pkgs; };
         noctalia = import ./modules/home/noctalia.nix { inherit inputs; };
         shell = ./modules/home/shell.nix;
         tmux = ./modules/home/tmux.nix;
@@ -131,9 +133,7 @@
           formatting = pkgs.runCommand "check-nix-formatting" { nativeBuildInputs = [ pkgs.nixfmt ]; } ''
             cp -r ${./.} source
             chmod -R +w source
-            find source -name '*.nix' \
-              ! -path 'source/hosts/nixos-vm/hardware-configuration.nix' \
-              -print0 | xargs -0 nixfmt --check
+            find source -name '*.nix' -print0 | xargs -0 nixfmt --check
             touch $out
           '';
         }
