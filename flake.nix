@@ -54,6 +54,21 @@
           alex = import ./lib { lib = self; };
         }
       );
+
+      mkHome =
+        {
+          system,
+          user,
+          modules,
+        }:
+        inputs.home-manager.lib.homeManagerConfiguration {
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
+          extraSpecialArgs = { inherit inputs user; };
+          inherit modules;
+        };
     in
     {
       darwinConfigurations."ab-mbp-m3" = nix-darwin.lib.darwinSystem {
@@ -68,6 +83,33 @@
         modules = [
           ./hosts/nixos-vm/configuration.nix
         ];
+      };
+
+      homeConfigurations = {
+        "ab@ab-mbp-m3" = mkHome {
+          system = "aarch64-darwin";
+          user = {
+            name = "ab";
+            homeDir = "/Users/ab";
+          };
+          modules = [ ./profiles/home/ab-mbp-m3.nix ];
+        };
+
+        "alex@nixos-vm" = mkHome {
+          system = "aarch64-linux";
+          user = {
+            name = "alex";
+            homeDir = "/home/alex";
+          };
+          modules = [ ./profiles/home/nixos-vm.nix ];
+        };
+      };
+
+      homeModules = {
+        common = ./modules/home/common.nix;
+        dms = import ./modules/home/dms.nix { inherit inputs; };
+        niri = import ./modules/home/niri.nix { inherit inputs; };
+        noctalia = import ./modules/home/noctalia.nix { inherit inputs; };
       };
     };
 }
