@@ -4,5 +4,6 @@
     gh
     just
     lazygit
+    statix
   ];
 }
