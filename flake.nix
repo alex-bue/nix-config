@@ -74,14 +74,14 @@
       darwinConfigurations."ab-mbp-m3" = nix-darwin.lib.darwinSystem {
         specialArgs = { inherit inputs lib; };
         modules = [
-          ./hosts/ab-mbp-m3/configuration.nix
+          ./hosts/ab-mbp-m3.nix
         ];
       };
 
       nixosConfigurations."nixos-vm" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs lib; };
         modules = [
-          ./hosts/nixos-vm/configuration.nix
+          ./hosts/nixos-vm.nix
         ];
       };
 

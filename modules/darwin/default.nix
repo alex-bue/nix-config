@@ -1,38 +1,7 @@
 {
   imports = [
-    ./apps/aerospace.nix
-    ./apps/alfred.nix
-    ./apps/anki.nix
-    ./apps/anydesk.nix
-    ./apps/betterdisplay.nix
-    ./apps/bitwarden.nix
-    ./apps/calibre.nix
-    ./apps/codex.nix
-    ./apps/dbeaverCommunity.nix
-    ./apps/discord.nix
-    ./apps/dockerDesktop.nix
-    ./apps/firefox.nix
-    ./apps/ghostty.nix
-    ./apps/googleChrome.nix
-    ./apps/hiddenbar.nix
-    ./apps/iina.nix
-    ./apps/karabinerElements.nix
-    ./apps/logi-options.nix
-    ./apps/obsidian.nix
-    ./apps/onedrive.nix
-    ./apps/raycast.nix
-    ./apps/scrollReverser.nix
-    ./apps/skim.nix
-    ./apps/spotify.nix
-    ./apps/steam.nix
-    ./apps/subsurface.nix
-    ./apps/visualStudioCode.nix
-    ./apps/wezterm.nix
-    ./apps/zotero.nix
-    ./defaults.nix
     ./home-manager.nix
     ./homebrew.nix
-    ./nix.nix
     ./user.nix
   ];
 }

@@ -1,22 +1,6 @@
 {
   imports = [
-    ./apps/codex.nix
-    ./apps/firefox.nix
-    ./apps/ghostty.nix
-    ./apps/wezterm.nix
-    ./dbus.nix
-    ./greetd.nix
     ./home-manager.nix
-    ./keyring.nix
-    ./networkmanager.nix
-    ./niri.nix
-    ./nix.nix
-    ./openssh.nix
-    ./pipewire.nix
-    ./polkit.nix
-    ./portal.nix
-    ./session.nix
     ./user.nix
-    ./zsh.nix
   ];
 }
