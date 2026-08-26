@@ -1,5 +1,5 @@
 {
-  description = "Starter Configuration for macOS and NixOS";
+  description = "macOS, NixOS, and Home Manager configurations";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -82,14 +82,14 @@
       darwinConfigurations."ab-mbp-m3" = nix-darwin.lib.darwinSystem {
         specialArgs = { inherit inputs lib; };
         modules = [
-          ./hosts/ab-mbp-m3.nix
+          ./hosts/ab-mbp-m3
         ];
       };
 
       nixosConfigurations."nixos-vm" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs lib; };
         modules = [
-          ./hosts/nixos-vm.nix
+          ./hosts/nixos-vm
         ];
       };
 
@@ -102,7 +102,7 @@
             alias = "Alexander Büscher";
             email = "alexanderbuescher@outlook.com";
           };
-          modules = [ ./profiles/home/default.nix ];
+          modules = [ ./homes/personal.nix ];
         };
       };
 

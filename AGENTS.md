@@ -5,9 +5,8 @@
 This repository is a Nix flake for macOS and NixOS host configuration.
 
 - `flake.nix` defines inputs and exposes system and standalone Home Manager configurations.
-- `hosts/<host>.nix` contains final machine-specific settings and imports reusable system roles.
-- `roles/` composes reusable system capabilities between hosts and feature modules.
-- `profiles/home/` composes Home Manager capabilities independently of system roles.
+- `hosts/<host>/default.nix` is the complete system configuration for one concrete machine. It explicitly selects system modules and Home Manager environment.
+- `homes/` contains complete user environments that compose reusable Home Manager capabilities. These environments also support standalone Home Manager targets.
 - `modules/darwin/`, `modules/nixos/`, `modules/home/`, and `modules/shared/` contain explicitly imported reusable modules.
 - `lib/default.nix` contains small shared helpers, currently `lib.alex.enabled` and `lib.alex.disabled`.
 - `flake.lock` pins dependency revisions; update it intentionally.
@@ -24,11 +23,12 @@ This repository is a Nix flake for macOS and NixOS host configuration.
 ## Coding Style & Naming Conventions
 
 - Format Nix with `nixfmt` if available; keep two-space indentation and the existing brace layout.
-- Prefer shallow modules such as `docker.nix`; use a directory only when a module genuinely needs supporting files.
+- Prefer shallow feature modules such as `docker.nix`; use per-host directories because machine configurations commonly include hardware, disk, or networking files.
 - Keep imports explicit. A file must not become active merely because it exists.
 - Define feature switches as `options.mine.<area>.<name>.enable = lib.mkEnableOption "...";`.
 - Gate module config with `config = lib.mkIf cfg.enable { ... };`.
-- Prefer hosts and roles for system feature decisions; importing a Home Manager module enables that user capability.
+- Make system feature decisions in concrete host files. Extract shared composition only after multiple hosts genuinely reuse it.
+- Import one complete `homes/*.nix` environment from each host or standalone Home Manager output; importing a Home Manager feature module enables that capability.
 
 ## Testing Guidelines
 

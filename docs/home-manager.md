@@ -3,11 +3,11 @@
 Each user and target has one activation owner. This avoids two Home Manager
 generations competing to manage the same files.
 
-| Target | Activation owner | Profile |
+| Target | Activation owner | Home environment |
 | --- | --- | --- |
-| `ab@ab-mbp-m3` | `darwin-rebuild` | `default.nix` + `darwin-desktop.nix` |
-| `alex@nixos-vm` | `nixos-rebuild` | `default.nix` + `linux-desktop.nix` |
-| `ab@personal-wsl` | standalone Home Manager | `default.nix` |
+| `ab@ab-mbp-m3` | `darwin-rebuild` | `homes/darwin.nix` |
+| `alex@nixos-vm` | `nixos-rebuild` | `homes/linux-desktop.nix` |
+| `ab@personal-wsl` | standalone Home Manager | `homes/personal.nix` |
 
 The first two rows are embedded in their system configurations and are not
 exported as standalone flake outputs. Activate them only through the owning
@@ -23,22 +23,24 @@ just home-switch 'ab@personal-wsl'
 
 This target assumes an `ab` account at `/home/ab` on `x86_64-linux`.
 Create another concrete `homeConfigurations` entry when a machine has a
-different user, home directory, architecture, or profile composition.
+different user, home directory, architecture, or environment composition.
 
-The profiles do not add NixOS or nix-darwin system paths to `PATH`. Home
+The home environments do not add NixOS or nix-darwin system paths to `PATH`. Home
 Manager initializes its own profile, while the host operating system remains
 responsible for system paths.
 
-For a machine that needs a smaller configuration, add a new profile under
-`profiles/home/` and import only the capabilities it needs. Reusable
-capabilities are exported through `homeModules` and can also be imported by
-flakes outside this repository.
+Files under `homes/` are complete user environments. They compose reusable
+capabilities from `modules/home/` and may also contain defaults that apply to
+the whole environment. For a machine that needs a smaller configuration, add
+an environment such as `homes/work.nix` and import only the capabilities it
+needs. Reusable capabilities are exported through `homeModules` and can also
+be imported by flakes outside this repository.
 
-`default.nix` describes the reusable personal environment. Desktop profiles
-explicitly add terminal and desktop configuration; the Linux desktop profile
-also adds Niri and Noctalia. Ordinary WSL has no system role and imports only
-the default Home Manager profile. Add profiles such as `work.nix` or
-`server.nix` only when their module composition actually differs.
+`homes/personal.nix` describes the reusable personal terminal and development
+environment. `homes/darwin.nix` and `homes/linux-desktop.nix` build on it with
+the relevant desktop configuration. Ordinary WSL has no Nix-managed system
+configuration and imports only `homes/personal.nix`. Add environments such as
+`work.nix` or `server.nix` only when their module composition actually differs.
 
 ## Chezmoi boundary
 
@@ -56,7 +58,7 @@ that will not overwrite Home Manager-owned files.
 
 ## On-demand tools
 
-The default profile installs only persistent shell, editor, and repository
+The personal environment installs only persistent shell, editor, and repository
 workflow tools. Language toolchains, container clients, document processors,
 and media utilities should normally come from a project's development shell:
 
