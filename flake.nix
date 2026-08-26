@@ -55,6 +55,13 @@
         }
       );
 
+      systems = [
+        "aarch64-darwin"
+        "aarch64-linux"
+      ];
+
+      forAllSystems = lib.genAttrs systems;
+
       mkHome =
         {
           system,
@@ -111,5 +118,24 @@
         niri = import ./modules/home/niri.nix { inherit inputs; };
         noctalia = import ./modules/home/noctalia.nix { inherit inputs; };
       };
+
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
+
+      checks = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
+          formatting = pkgs.runCommand "check-nix-formatting" { nativeBuildInputs = [ pkgs.nixfmt ]; } ''
+            cp -r ${./.} source
+            chmod -R +w source
+            find source -name '*.nix' \
+              ! -path 'source/hosts/nixos-vm/hardware-configuration.nix' \
+              -print0 | xargs -0 nixfmt --check
+            touch $out
+          '';
+        }
+      );
     };
 }
