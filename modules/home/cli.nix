@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   home.packages = with pkgs; [
     chezmoi
@@ -9,6 +9,16 @@
     ripgrep
     unzip
   ];
+
+  programs.nh = {
+    enable = true;
+    flake = "${config.home.homeDirectory}/nix-config";
+
+    clean = {
+      enable = true;
+      extraArgs = "--keep-since 7d --keep 5";
+    };
+  };
 
   programs.yazi = {
     enable = true;
