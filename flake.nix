@@ -113,10 +113,12 @@
       };
 
       homeModules = {
-        common = ./modules/home/common.nix;
+        cli = ./modules/home/cli.nix;
+        development = ./modules/home/development.nix;
         dms = import ./modules/home/dms.nix { inherit inputs; };
         niri = import ./modules/home/niri.nix { inherit inputs; };
         noctalia = import ./modules/home/noctalia.nix { inherit inputs; };
+        shell = ./modules/home/shell.nix;
       };
 
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);

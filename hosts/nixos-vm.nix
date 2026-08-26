@@ -20,10 +20,6 @@
 
   virtualisation.vmware.guest.enable = true;
 
-  environment.systemPackages = [
-    pkgs.neovim
-  ];
-
   networking.hostName = "nixos-vm";
   nixpkgs.hostPlatform = "aarch64-linux";
 

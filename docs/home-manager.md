@@ -33,3 +33,28 @@ For a machine that needs a smaller configuration, add a new profile under
 `profiles/home/` and import only the capabilities it needs. Reusable
 capabilities are exported through `homeModules` and can also be imported by
 flakes outside this repository.
+
+## On-demand tools
+
+The workstation profiles install only persistent shell, editor, and repository
+workflow tools. Language toolchains, container clients, document processors,
+and media utilities should normally come from a project's development shell:
+
+```sh
+nix develop
+```
+
+For temporary use outside a project, open a disposable shell containing the
+needed packages:
+
+```sh
+nix shell nixpkgs#go nixpkgs#nodejs_24
+nix shell nixpkgs#imagemagick nixpkgs#ffmpeg
+nix shell nixpkgs#statix
+nix shell nixpkgs#texliveFull
+```
+
+Use `nix fmt` for this repository; the flake supplies its pinned formatter.
+
+Import `homeModules.shell`, `homeModules.cli`, or `homeModules.development`
+when another flake needs one of the reusable persistent capabilities.

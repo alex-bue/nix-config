@@ -1,7 +1,9 @@
 {
   imports = [
     ./base.nix
-    ../../modules/home/common.nix
+    ../../modules/home/cli.nix
+    ../../modules/home/development.nix
+    ../../modules/home/shell.nix
   ];
 
   manual.manpages.enable = false;
