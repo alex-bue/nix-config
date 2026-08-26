@@ -58,6 +58,7 @@
       systems = [
         "aarch64-darwin"
         "aarch64-linux"
+        "x86_64-linux"
       ];
 
       forAllSystems = lib.genAttrs systems;
@@ -93,22 +94,13 @@
       };
 
       homeConfigurations = {
-        "ab@standalone-darwin" = mkHome {
-          system = "aarch64-darwin";
+        "ab@personal-wsl" = mkHome {
+          system = "x86_64-linux";
           user = {
             name = "ab";
-            homeDir = "/Users/ab";
+            homeDir = "/home/ab";
           };
-          modules = [ ./profiles/home/darwin-workstation.nix ];
-        };
-
-        "alex@standalone-linux" = mkHome {
-          system = "aarch64-linux";
-          user = {
-            name = "alex";
-            homeDir = "/home/alex";
-          };
-          modules = [ ./profiles/home/linux-desktop.nix ];
+          modules = [ ./profiles/home/default.nix ];
         };
       };
 

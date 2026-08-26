@@ -10,9 +10,12 @@
     ../roles/workstation.nix
   ];
 
-  home-manager.users.${config.mine.user.name}.imports = [
-    ../profiles/home/darwin-workstation.nix
-  ];
+  home-manager.users.${config.mine.user.name} = {
+    imports = [
+      ../profiles/home/default.nix
+    ];
+    manual.manpages.enable = false;
+  };
 
   networking.hostName = "ab-mbp-m3";
   nixpkgs.hostPlatform = "aarch64-darwin";

@@ -12,7 +12,9 @@
   ];
 
   home-manager.users.${config.mine.user.name}.imports = [
-    ../profiles/home/linux-desktop.nix
+    ../profiles/home/default.nix
+    ../modules/home/niri.nix
+    ../modules/home/noctalia.nix
   ];
 
   system.stateVersion = "24.11";

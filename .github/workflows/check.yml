@@ -32,10 +32,8 @@ jobs:
       - uses: DeterminateSystems/determinate-nix-action@v3.22.2
       - name: Build system
         run: nix build .#darwinConfigurations.ab-mbp-m3.system --no-link --print-build-logs
-      - name: Build standalone Home Manager
-        run: nix build '.#homeConfigurations."ab@standalone-darwin".activationPackage' --no-link --print-build-logs
 
-  linux:
+  nixos:
     name: Build NixOS
     runs-on: ubuntu-24.04-arm
     steps:
@@ -48,5 +46,11 @@ jobs:
           sudo rm -rf /opt/ghc
       - name: Build system
         run: nix build .#nixosConfigurations.nixos-vm.config.system.build.toplevel --no-link --print-build-logs
-      - name: Build standalone Home Manager
-        run: nix build '.#homeConfigurations."alex@standalone-linux".activationPackage' --no-link --print-build-logs
+
+  wsl:
+    name: Build WSL Home Manager
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: DeterminateSystems/determinate-nix-action@v3.22.2
+      - run: nix build '.#homeConfigurations."ab@personal-wsl".activationPackage' --no-link --print-build-logs
