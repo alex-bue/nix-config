@@ -12,7 +12,7 @@
   ];
 
   home-manager.users.${config.mine.user.name}.imports = [
-    ../profiles/home/nixos-vm.nix
+    ../profiles/home/linux-desktop.nix
   ];
 
   system.stateVersion = "24.11";

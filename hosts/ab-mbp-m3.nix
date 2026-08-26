@@ -11,7 +11,7 @@
   ];
 
   home-manager.users.${config.mine.user.name}.imports = [
-    ../profiles/home/ab-mbp-m3.nix
+    ../profiles/home/darwin-workstation.nix
   ];
 
   networking.hostName = "ab-mbp-m3";

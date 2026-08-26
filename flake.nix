@@ -86,22 +86,22 @@
       };
 
       homeConfigurations = {
-        "ab@ab-mbp-m3" = mkHome {
+        "ab@standalone-darwin" = mkHome {
           system = "aarch64-darwin";
           user = {
             name = "ab";
             homeDir = "/Users/ab";
           };
-          modules = [ ./profiles/home/ab-mbp-m3.nix ];
+          modules = [ ./profiles/home/darwin-workstation.nix ];
         };
 
-        "alex@nixos-vm" = mkHome {
+        "alex@standalone-linux" = mkHome {
           system = "aarch64-linux";
           user = {
             name = "alex";
             homeDir = "/home/alex";
           };
-          modules = [ ./profiles/home/nixos-vm.nix ];
+          modules = [ ./profiles/home/linux-desktop.nix ];
         };
       };
 
