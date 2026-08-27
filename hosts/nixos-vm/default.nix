@@ -12,7 +12,6 @@ in
     ./hardware-configuration.nix
     ../../modules/nixos
     ../../modules/shared
-    ../../modules/nixos/apps/codex.nix
     ../../modules/nixos/apps/firefox.nix
     ../../modules/nixos/apps/ghostty.nix
     ../../modules/nixos/apps/wezterm.nix
@@ -47,7 +46,6 @@ in
 
   mine = {
     apps = {
-      codex = enabled;
       firefox = enabled;
       ghostty = enabled;
       wezterm = enabled;
