@@ -47,22 +47,22 @@ _nh action target:
     case "$(uname -s)" in
         Darwin)
             if [[ -n "$target" ]]; then
-                nh darwin "$action" -H "$target"
+                nh darwin "$action" . -H "$target"
             else
-                nh darwin "$action"
+                nh darwin "$action" .
             fi
             ;;
         Linux)
             if [[ -e /etc/NIXOS ]]; then
                 if [[ -n "$target" ]]; then
-                    nh os "$action" -H "$target"
+                    nh os "$action" . -H "$target"
                 else
-                    nh os "$action"
+                    nh os "$action" .
                 fi
             elif [[ -n "$target" ]]; then
-                nh home "$action" -c "$target"
+                nh home "$action" . -c "$target"
             elif [[ -n "${NH_HOME_CONFIG:-}" ]]; then
-                nh home "$action" -c "$NH_HOME_CONFIG"
+                nh home "$action" . -c "$NH_HOME_CONFIG"
             else
                 echo "No Home Manager configuration specified." >&2
                 echo "Use: just $action <configuration>" >&2
