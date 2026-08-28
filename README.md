@@ -3,72 +3,86 @@
 This flake manages the `ab-mbp-m3` macOS host, the `nixos-vm` NixOS host,
 and the standalone `ab@personal-wsl` Home Manager configuration.
 
-## Layout
+## Architecture
+
+The repository uses a dendritic, aspect-oriented architecture. Every Nix file
+under `modules/` is a flake-parts module discovered recursively by
+`import-tree`. Files publish typed facets through
+`flake.modules.{darwin,nixos,homeManager}`; directory placement is only for
+human navigation.
+
+Concepts own their configuration across platforms. For example,
+`modules/apps/wezterm/default.nix` owns the Homebrew installation, NixOS
+package, Home Manager files, and colocated Lua configuration. The `base` and
+`gui` Home Manager environments compose user-facing facets, while host modules
+compose system facets alongside identity, hardware, and state versions.
 
 ```text
-flake.nix                 Flake inputs and exported configurations
-hosts/<host>/             Complete macOS or NixOS host configurations
-homes/                    Complete Home Manager environments
-modules/darwin/           Reusable nix-darwin modules
-modules/nixos/            Reusable NixOS modules
-modules/home/             Reusable Home Manager modules
-modules/shared/           Modules shared by system platforms
-lib/                      Small repository helpers
-docs/                     Supporting documentation
+modules/
+├── apps/          cross-platform and desktop applications
+├── cli/           terminal programs and configuration
+├── development/   persistent development tools
+├── desktop/       compositors and desktop integration
+├── networking/    networking facilities
+├── services/      system services
+├── system/        platform infrastructure and defaults
+├── hardware/      typed hardware facets
+├── users/         user accounts and identity
+├── base.nix        shared terminal Home Manager composition
+├── gui.nix         shared graphical Home Manager composition
+├── hosts/         system compositions and concrete outputs
+└── flake/         flake-parts infrastructure and repository tooling
 ```
 
-Hosts and home environments explicitly import the modules they use. Adding a
-file under `modules/` does not enable it automatically.
+Adding a `.nix` file below `modules/` automatically evaluates it as a
+flake-parts module. It must not be a raw NixOS, nix-darwin, or Home Manager
+module. Publish raw typed modules through `flake.modules` and import those
+facets from concrete hosts.
+
+## Composition
+
+- `base` composes the shared terminal, editor, and repository environment.
+- `gui` extends `base` with the cross-platform Ghostty and WezTerm facets.
+- Graphical hosts add their platform desktop facets directly: AeroSpace on
+  Darwin, or Niri and Noctalia on Linux.
+- `ab-mbp-m3` and `nixos-vm` use `gui`; `personal-wsl` uses `base`.
+- System applications, services, hardware, and platform settings remain
+  explicitly composed by their concrete host.
+
+These environments are plain typed Home Manager modules, not a general role or
+profile framework.
 
 ## Commands
 
-The [`justfile`](justfile) is the command-line entry point. Its `build` and
-`switch` recipes use `nh` and select the appropriate backend for macOS, NixOS,
-or standalone Home Manager based on the current system.
+The `justfile` remains the command-line entry point:
 
 ```sh
-just                  # list available recipes
-just build            # build the current host
-just switch           # build and activate the current host
-just check            # evaluate all flake checks
-just fmt              # format Nix and just files
-just update           # update every flake input
+just
+just build
+just build nixos-vm
+just build 'ab@personal-wsl'
+just switch
+just check
+just fmt
+just update
 just update-one nixpkgs
-just upgrade          # update, check, and switch
-just gc               # keep five generations and at least seven days
+just upgrade
+just gc
 ```
 
-Pass a target when it cannot be inferred or when selecting another
-configuration for the current platform:
+`build` never activates a configuration. `switch` and `upgrade` do activate
+one and should only be run intentionally on the managed target.
 
-```sh
-just build nixos-vm             # on NixOS
-just switch 'ab@personal-wsl'   # on non-NixOS Linux
-```
+## Adding configuration
 
-On non-NixOS Linux, `build` and `switch` require a Home Manager target argument
-or `NH_HOME_CONFIG`.
+1. Add or extend the owning concept under `modules/`.
+2. Publish each implementation under its real module class.
+3. Import Home Manager facets from `base` or `gui`; import system facets from
+   each concrete host that consumes them.
+4. Keep non-Nix assets beside the owning aspect.
+5. Run `just fmt`, `just check`, and build every affected output.
 
-## Adding a host
+Do not add filesystem import registries, platform package dumps, feature-enable
+flags, or global `specialArgs` merely to connect aspects.
 
-1. Create `hosts/<hostname>/default.nix`, keeping hardware, disk, and networking
-   files beside it.
-2. Explicitly import the required platform and feature modules.
-3. Select one complete environment from `homes/` for Home Manager.
-4. Export the host from `darwinConfigurations` or `nixosConfigurations` in
-   `flake.nix`.
-5. Run `just fmt`, `just check`, and `just build <hostname>`.
-
-Keep composition in the concrete host until multiple hosts genuinely share the
-same system decisions.
-
-## Adding a standalone home
-
-1. Reuse a complete environment in `homes/`, or add a new one.
-2. Add a `homeConfigurations."user@target"` entry in `flake.nix` with its
-   system, user details, and environment module.
-3. Run `just fmt`, `just check`, and `just build 'user@target'` on a non-NixOS
-   Linux system.
-
-See [Home Manager activation](docs/home-manager.md) for activation ownership
-and the boundary with chezmoi.
+See [Home Manager activation](docs/home-manager.md) for activation ownership.
