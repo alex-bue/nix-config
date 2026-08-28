@@ -11,12 +11,51 @@ in
       darwin.nix
       darwin.fonts
       darwin.darwin-defaults
-      darwin.personal-desktop
+      darwin.dbeaver
+      darwin.docker-desktop
+      darwin.vscode
+      darwin.aerospace
+      darwin.ghostty
+      darwin.wezterm
+      darwin.alfred
+      darwin.anydesk
+      darwin.anki
+      darwin.betterdisplay
+      darwin.bitwarden
+      darwin.calibre
+      darwin.chrome
+      darwin.discord
+      darwin.firefox
+      darwin.iina
+      darwin.karabiner-elements
+      darwin.logi-options
+      darwin.obsidian
+      darwin.raycast
+      darwin.scroll-reverser
+      darwin.skim
+      darwin.spotify
+      darwin.steam
+      darwin.subsurface
+      darwin.zotero
     ];
     home-manager.users.ab = {
       imports = [
         homeManager.alexander
-        homeManager.personal-desktop
+        homeManager.core-cli
+        homeManager.neovim
+        homeManager.git
+        homeManager.shell
+        homeManager.fzf
+        homeManager.starship
+        homeManager.zoxide
+        homeManager.nh
+        homeManager.yazi
+        homeManager.tmux
+        homeManager.coding-agents
+        homeManager.repository-tools
+        homeManager.aerospace
+        homeManager.ghostty
+        homeManager.wezterm
       ];
       home.username = "ab";
       home.homeDirectory = "/Users/ab";

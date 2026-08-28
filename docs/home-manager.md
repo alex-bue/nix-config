@@ -2,11 +2,11 @@
 
 Each user and target has one activation owner:
 
-| Target | Activation owner | Composed Home Manager role |
+| Target | Activation owner | Home Manager composition |
 | --- | --- | --- |
-| `ab@ab-mbp-m3` | `darwin-rebuild` | `personal-desktop` |
-| `alex@nixos-vm` | `nixos-rebuild` | `niri-desktop` |
-| `ab@personal-wsl` | standalone Home Manager | `development` |
+| `ab@ab-mbp-m3` | `darwin-rebuild` | Directly composed Mac facets |
+| `alex@nixos-vm` | `nixos-rebuild` | Directly composed Niri facets |
+| `ab@personal-wsl` | standalone Home Manager | Directly composed development facets |
 
 The Darwin and NixOS profiles are embedded in their system configurations and
 are not separate `homeConfigurations` outputs. Build or activate them only
@@ -21,8 +21,8 @@ just switch 'ab@personal-wsl'
 The WSL target assumes user `ab`, home `/home/ab`, and `x86_64-linux`.
 
 Home Manager facets are published under `modules.homeManager`. Application
-facets own their settings and managed files; roles compose them into complete
-environments. Embedded profiles use the parent system's nixpkgs instance,
+facets own their settings and managed files; concrete host modules compose them
+into complete environments. Embedded profiles use the parent system's nixpkgs instance,
 while the standalone profile constructs an unfree-enabled nixpkgs instance.
 
 ## Chezmoi boundary
@@ -37,7 +37,7 @@ that applications intentionally mutate or regenerate:
 
 ## On-demand tools
 
-Persistent terminal, editor, and repository tools come from the `development`
-role. Language toolchains, container clients, document processors, and media
-utilities should normally come from project development shells or temporary
-`nix shell` invocations.
+Persistent terminal, editor, and repository facets are imported directly by all
+three configurations. Language toolchains, container clients, document
+processors, and media utilities should normally come from project development
+shells or temporary `nix shell` invocations.

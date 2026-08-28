@@ -31,14 +31,14 @@ Scope: whole repository.
 - `modules/apps/`, `modules/cli/`, `modules/development/`, and similar
   directories organize aspects by concept rather than platform.
 - Aspects publish typed modules through `flake.modules.<class>.<aspect>`.
-- `modules/roles/` composes semantic groups of aspects, and `modules/hosts/`
-  defines thin concrete configurations and flake outputs.
+- `modules/hosts/` composes typed aspects directly into concrete configurations
+  and flake outputs.
 - `modules/hardware/` publishes typed hardware facets used by hosts.
 - `docs/` contains supporting documentation.
 
 Automatic discovery only evaluates flake-parts modules; it does not activate
 their published facets. Keep activation explicit by composing typed facets into
-roles and hosts. Directory placement is for navigation and must not determine
+hosts. Directory placement is for navigation and must not determine
 the dependency graph. Keep raw configuration assets beside their owning aspect.
 
 ## Nix conventions
@@ -57,7 +57,7 @@ the dependency graph. Keep raw configuration assets beside their owning aspect.
 - Run `just fmt` and `just check` for every change.
 - Build affected host outputs when changing shared or platform modules:
   `just build <hostname>` on the matching platform.
-- For new aspects, verify the facet is composed by a role or host and that
+- For new aspects, verify the facet is composed by a host and that
   evaluation includes the expected package, service, or setting.
 - Never run `just switch` as validation unless explicitly asked; it activates
   the configuration on the current host.

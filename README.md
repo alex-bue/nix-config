@@ -13,9 +13,9 @@ human navigation.
 
 Concepts own their configuration across platforms. For example,
 `modules/apps/wezterm/default.nix` owns the Homebrew installation, NixOS
-package, Home Manager files, and colocated Lua configuration. Roles compose
-facets, while host modules contain only identity, hardware, state versions,
-and role selection.
+package, Home Manager files, and colocated Lua configuration. Host modules
+compose the required facets directly alongside identity, hardware, and state
+versions.
 
 ```text
 modules/
@@ -28,26 +28,25 @@ modules/
 ├── system/        platform infrastructure and defaults
 ├── hardware/      typed hardware facets
 ├── users/         user accounts and identity
-├── roles/         semantic compositions of facets
-├── hosts/         concrete outputs and thin host modules
+├── hosts/         direct aspect compositions and concrete outputs
 └── flake/         flake-parts infrastructure and repository tooling
 ```
 
 Adding a `.nix` file below `modules/` automatically evaluates it as a
 flake-parts module. It must not be a raw NixOS, nix-darwin, or Home Manager
 module. Publish raw typed modules through `flake.modules` and import those
-facets from roles or hosts.
+facets from concrete hosts.
 
 ## Composition
 
-- `development` provides the shared terminal and repository environment, plus
-  Darwin development GUI applications.
-- `personal-desktop` adds the macOS applications and their Home Manager
-  configuration.
-- `niri-desktop` composes the NixOS services, applications, Niri, Noctalia,
-  and shared development environment.
-- `ab-mbp-m3`, `nixos-vm`, and `personal-wsl` compose these roles with the
-  appropriate user, platform, and hardware facets.
+- `ab-mbp-m3` directly imports the Darwin applications, system facilities, and
+  Home Manager facets used by the Mac.
+- `nixos-vm` directly imports its hardware, services, Niri desktop, applications,
+  and Home Manager facets.
+- `personal-wsl` directly imports the shared terminal and development facets.
+
+There is deliberately no role or profile layer. Repeated import lists keep each
+concrete output explicit and avoid single-consumer composition abstractions.
 
 ## Commands
 
@@ -74,8 +73,7 @@ one and should only be run intentionally on the managed target.
 
 1. Add or extend the owning concept under `modules/`.
 2. Publish each implementation under its real module class.
-3. Compose the facet into a semantic role or directly into a host when it is
-   genuinely host-specific.
+3. Import the facet directly from every concrete host that consumes it.
 4. Keep non-Nix assets beside the owning aspect.
 5. Run `just fmt`, `just check`, and build every affected output.
 

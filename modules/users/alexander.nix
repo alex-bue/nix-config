@@ -28,6 +28,8 @@
 
   flake.modules.homeManager.alexander = {
     programs.home-manager.enable = true;
+    # Work around NixOS/nixpkgs#485682 in the generated options manpage.
+    manual.manpages.enable = false;
     programs.git.settings.user = {
       name = "Alexander Büscher";
       email = "alexanderbuescher@outlook.com";

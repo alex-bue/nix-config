@@ -12,12 +12,38 @@ in
       nixos.fonts
       nixos.shell
       nixos.openssh
-      nixos.niri-desktop
+      nixos.dbus
+      nixos.greetd
+      nixos.keyring
+      nixos.networkmanager
+      nixos.niri
+      nixos.pipewire
+      nixos.polkit
+      nixos.portal
+      nixos.session
+      nixos.firefox
+      nixos.ghostty
+      nixos.wezterm
     ];
     home-manager.users.alex = {
       imports = [
         homeManager.alexander
-        homeManager.niri-desktop
+        homeManager.core-cli
+        homeManager.neovim
+        homeManager.git
+        homeManager.shell
+        homeManager.fzf
+        homeManager.starship
+        homeManager.zoxide
+        homeManager.nh
+        homeManager.yazi
+        homeManager.tmux
+        homeManager.coding-agents
+        homeManager.repository-tools
+        homeManager.ghostty
+        homeManager.niri
+        homeManager.noctalia
+        homeManager.wezterm
       ];
       home.username = "alex";
       home.homeDirectory = "/home/alex";
