@@ -13,9 +13,9 @@ human navigation.
 
 Concepts own their configuration across platforms. For example,
 `modules/apps/wezterm/default.nix` owns the Homebrew installation, NixOS
-package, Home Manager files, and colocated Lua configuration. Host modules
-compose the required facets directly alongside identity, hardware, and state
-versions.
+package, Home Manager files, and colocated Lua configuration. The `base` and
+`gui` Home Manager environments compose user-facing facets, while host modules
+compose system facets alongside identity, hardware, and state versions.
 
 ```text
 modules/
@@ -28,7 +28,9 @@ modules/
 ├── system/        platform infrastructure and defaults
 ├── hardware/      typed hardware facets
 ├── users/         user accounts and identity
-├── hosts/         direct aspect compositions and concrete outputs
+├── base.nix        shared terminal Home Manager composition
+├── gui.nix         shared graphical Home Manager composition
+├── hosts/         system compositions and concrete outputs
 └── flake/         flake-parts infrastructure and repository tooling
 ```
 
@@ -39,14 +41,16 @@ facets from concrete hosts.
 
 ## Composition
 
-- `ab-mbp-m3` directly imports the Darwin applications, system facilities, and
-  Home Manager facets used by the Mac.
-- `nixos-vm` directly imports its hardware, services, Niri desktop, applications,
-  and Home Manager facets.
-- `personal-wsl` directly imports the shared terminal and development facets.
+- `base` composes the shared terminal, editor, and repository environment.
+- `gui` extends `base` with the cross-platform Ghostty and WezTerm facets.
+- Graphical hosts add their platform desktop facets directly: AeroSpace on
+  Darwin, or Niri and Noctalia on Linux.
+- `ab-mbp-m3` and `nixos-vm` use `gui`; `personal-wsl` uses `base`.
+- System applications, services, hardware, and platform settings remain
+  explicitly composed by their concrete host.
 
-There is deliberately no role or profile layer. Repeated import lists keep each
-concrete output explicit and avoid single-consumer composition abstractions.
+These environments are plain typed Home Manager modules, not a general role or
+profile framework.
 
 ## Commands
 
@@ -73,7 +77,8 @@ one and should only be run intentionally on the managed target.
 
 1. Add or extend the owning concept under `modules/`.
 2. Publish each implementation under its real module class.
-3. Import the facet directly from every concrete host that consumes it.
+3. Import Home Manager facets from `base` or `gui`; import system facets from
+   each concrete host that consumes them.
 4. Keep non-Nix assets beside the owning aspect.
 5. Run `just fmt`, `just check`, and build every affected output.
 

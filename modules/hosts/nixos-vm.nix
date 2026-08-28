@@ -28,22 +28,9 @@ in
     home-manager.users.alex = {
       imports = [
         homeManager.alexander
-        homeManager.core-cli
-        homeManager.neovim
-        homeManager.git
-        homeManager.shell
-        homeManager.fzf
-        homeManager.starship
-        homeManager.zoxide
-        homeManager.nh
-        homeManager.yazi
-        homeManager.tmux
-        homeManager.coding-agents
-        homeManager.repository-tools
-        homeManager.ghostty
+        homeManager.gui
         homeManager.niri
         homeManager.noctalia
-        homeManager.wezterm
       ];
       home.username = "alex";
       home.homeDirectory = "/home/alex";

@@ -41,21 +41,8 @@ in
     home-manager.users.ab = {
       imports = [
         homeManager.alexander
-        homeManager.core-cli
-        homeManager.neovim
-        homeManager.git
-        homeManager.shell
-        homeManager.fzf
-        homeManager.starship
-        homeManager.zoxide
-        homeManager.nh
-        homeManager.yazi
-        homeManager.tmux
-        homeManager.coding-agents
-        homeManager.repository-tools
+        homeManager.gui
         homeManager.aerospace
-        homeManager.ghostty
-        homeManager.wezterm
       ];
       home.username = "ab";
       home.homeDirectory = "/Users/ab";
