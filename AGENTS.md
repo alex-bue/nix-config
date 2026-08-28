@@ -25,38 +25,40 @@ Scope: whole repository.
 
 ## Repository layout
 
-- `flake.nix` defines inputs and exports system and standalone Home Manager
-  configurations.
-- `hosts/<host>/` contains one complete machine configuration, including
-  host-specific hardware, disk, or networking files.
-- `homes/` contains complete Home Manager environments used by hosts or
-  standalone Home Manager targets.
-- `modules/darwin/`, `modules/nixos/`, `modules/home/`, and `modules/shared/`
-  contain explicitly imported reusable modules.
-- `lib/default.nix` contains small shared helpers.
+- `flake.nix` is a minimal flake-parts and import-tree bootstrap.
+- Every `.nix` file under `modules/` is an automatically discovered
+  flake-parts module.
+- `modules/apps/`, `modules/cli/`, `modules/development/`, and similar
+  directories organize aspects by concept rather than platform.
+- Aspects publish typed modules through `flake.modules.<class>.<aspect>`.
+- `modules/roles/` composes semantic groups of aspects, and `modules/hosts/`
+  defines thin concrete configurations and flake outputs.
+- `modules/hardware/` publishes typed hardware facets used by hosts.
 - `docs/` contains supporting documentation.
 
-Keep imports explicit: a module must not become active merely because its file
-exists. Make system feature decisions in concrete host files and extract shared
-composition only after multiple hosts genuinely reuse it. Import one complete
-`homes/*.nix` environment from each host or standalone Home Manager output.
+Automatic discovery only evaluates flake-parts modules; it does not activate
+their published facets. Keep activation explicit by composing typed facets into
+roles and hosts. Directory placement is for navigation and must not determine
+the dependency graph. Keep raw configuration assets beside their owning aspect.
 
 ## Nix conventions
 
 - Format with `nixfmt` through `just fmt`; keep two-space indentation and the
   existing brace layout.
-- Prefer shallow, task-focused feature modules.
-- Define feature switches as
-  `options.mine.<area>.<name>.enable = lib.mkEnableOption "...";`.
-- Gate optional module configuration with `config = lib.mkIf cfg.enable { ... };`.
+- Prefer small, task-focused aspects that own all platform implementations of a
+  concept.
+- Publish reusable facets through the real `darwin`, `nixos`, or `homeManager`
+  class; do not use generic modules to bypass type checking.
+- Prefer composition over feature-enable options, global `specialArgs`, or
+  `_module.args` wiring.
 
 ## Validation
 
 - Run `just fmt` and `just check` for every change.
 - Build affected host outputs when changing shared or platform modules:
   `just build <hostname>` on the matching platform.
-- For new modules, verify the option is enabled from a host or home environment
-  and that evaluation includes the expected package, service, or setting.
+- For new aspects, verify the facet is composed by a role or host and that
+  evaluation includes the expected package, service, or setting.
 - Never run `just switch` as validation unless explicitly asked; it activates
   the configuration on the current host.
 
