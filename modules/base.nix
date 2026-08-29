@@ -9,6 +9,7 @@ in
       homeManager.neovim
       homeManager.git
       homeManager.shell
+      homeManager.direnv
       homeManager.fzf
       homeManager.starship
       homeManager.zoxide
@@ -17,6 +18,7 @@ in
       homeManager.tmux
       homeManager.coding-agents
       homeManager.repository-tools
+      homeManager.python
     ];
   };
 }
