@@ -71,15 +71,26 @@
           tmuxPlugins.sensible
           {
             plugin = tmuxPlugins.resurrect;
-            extraConfig = "set -g @resurrect-strategy-nvim 'session'";
-          }
-          {
-            plugin = tmuxPlugins.continuum;
-            extraConfig = "set -g @continuum-restore 'on'";
+            extraConfig = ''
+              set -g @resurrect-strategy-nvim 'session'
+              set -g @resurrect-processes '"~codex->codex resume --last" "~opencode->opencode --continue"'
+            '';
           }
           {
             plugin = tmuxPlugins.better-mouse-mode;
             extraConfig = ''set -g @scroll-speed-num-lines-per-scroll "1"'';
+          }
+          {
+            plugin = tmuxPlugins.continuum;
+            extraConfig = ''
+              set -g @continuum-restore 'on'
+              set -g @continuum-save-interval '10'
+
+              # Continuum installs its autosave hook in status-right, so the
+              # theme must be loaded before Continuum and must not overwrite it.
+              source-file ~/.config/tmux/palettes/everforest-dark-medium.tmux
+              source-file ~/.config/tmux/themes/minimal.tmux
+            '';
           }
         ];
         extraConfig = ''
@@ -109,8 +120,6 @@
           bind -T copy-mode-vi y send-keys -X copy-selection-and-cancel
 
           run-shell ${pkgs.vimPlugins.smart-splits-nvim}/smart-splits.tmux
-          source-file ~/.config/tmux/palettes/everforest-dark-medium.tmux
-          source-file ~/.config/tmux/themes/minimal.tmux
         '';
       };
 
