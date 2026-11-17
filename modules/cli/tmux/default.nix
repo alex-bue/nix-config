@@ -51,6 +51,12 @@
           exec sesh connect "$choice"
         '';
       };
+      smartSplitsTmux = pkgs.fetchFromGitHub {
+        owner = "smart-splits-nvim";
+        repo = "backend-tmux";
+        rev = "9e9e6aa9b3eb7a8d3896a993611622ac97abff52";
+        hash = "sha256-RcJdM6wFHZOEOK+cXVIT10anktqGgIilPmojFpdY+4g=";
+      };
     in
     {
       home.packages = [
@@ -119,7 +125,7 @@
           bind -T copy-mode-vi C-v send-keys -X rectangle-toggle
           bind -T copy-mode-vi y send-keys -X copy-selection-and-cancel
 
-          run-shell ${pkgs.vimPlugins.smart-splits-nvim}/smart-splits.tmux
+          run-shell ${smartSplitsTmux}/smart-splits.tmux
         '';
       };
 
