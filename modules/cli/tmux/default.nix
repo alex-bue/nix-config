@@ -51,6 +51,12 @@
           exec sesh connect "$choice"
         '';
       };
+      smartSplitsTmux = pkgs.fetchFromGitHub {
+        owner = "smart-splits-nvim";
+        repo = "backend-tmux";
+        rev = "9e9e6aa9b3eb7a8d3896a993611622ac97abff52";
+        hash = "sha256-RcJdM6wFHZOEOK+cXVIT10anktqGgIilPmojFpdY+4g=";
+      };
     in
     {
       home.packages = [
@@ -71,15 +77,26 @@
           tmuxPlugins.sensible
           {
             plugin = tmuxPlugins.resurrect;
-            extraConfig = "set -g @resurrect-strategy-nvim 'session'";
-          }
-          {
-            plugin = tmuxPlugins.continuum;
-            extraConfig = "set -g @continuum-restore 'on'";
+            extraConfig = ''
+              set -g @resurrect-strategy-nvim 'session'
+              set -g @resurrect-processes '"~codex->codex resume --last" "~opencode->opencode --continue"'
+            '';
           }
           {
             plugin = tmuxPlugins.better-mouse-mode;
             extraConfig = ''set -g @scroll-speed-num-lines-per-scroll "1"'';
+          }
+          {
+            plugin = tmuxPlugins.continuum;
+            extraConfig = ''
+              set -g @continuum-restore 'on'
+              set -g @continuum-save-interval '10'
+
+              # Continuum installs its autosave hook in status-right, so the
+              # theme must be loaded before Continuum and must not overwrite it.
+              source-file ~/.config/tmux/palettes/everforest-dark-medium.tmux
+              source-file ~/.config/tmux/themes/minimal.tmux
+            '';
           }
         ];
         extraConfig = ''
@@ -108,9 +125,7 @@
           bind -T copy-mode-vi C-v send-keys -X rectangle-toggle
           bind -T copy-mode-vi y send-keys -X copy-selection-and-cancel
 
-          run-shell ${pkgs.vimPlugins.smart-splits-nvim}/smart-splits.tmux
-          source-file ~/.config/tmux/palettes/everforest-dark-medium.tmux
-          source-file ~/.config/tmux/themes/minimal.tmux
+          run-shell ${smartSplitsTmux}/smart-splits.tmux
         '';
       };
 
