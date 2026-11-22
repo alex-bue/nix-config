@@ -366,6 +366,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-noctalia-v4": {
+      "locked": {
+        "lastModified": 1787498568,
+        "narHash": "sha256-9i/VTdusq/+NM/tz+J1Re+ojkMB8MBf0QshnYfzHz30=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "56c02bc00adcf003215cc4bd996d6efaf4cff188",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "56c02bc00adcf003215cc4bd996d6efaf4cff188",
+        "type": "github"
+      }
+    },
     "nixpkgs-regression": {
       "locked": {
         "lastModified": 1643052045,
@@ -431,7 +447,7 @@
     "noctalia": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs"
+          "nixpkgs-noctalia-v4"
         ],
         "noctalia-qs": [
           "noctalia-qs"
@@ -455,7 +471,7 @@
     "noctalia-qs": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs"
+          "nixpkgs-noctalia-v4"
         ],
         "systems": "systems",
         "treefmt-nix": "treefmt-nix"
@@ -484,6 +500,7 @@
         "nix-darwin": "nix-darwin",
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs_3",
+        "nixpkgs-noctalia-v4": "nixpkgs-noctalia-v4",
         "noctalia": "noctalia",
         "noctalia-qs": "noctalia-qs"
       }
