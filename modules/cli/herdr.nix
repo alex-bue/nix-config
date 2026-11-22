@@ -1,10 +1,26 @@
 {
-  flake.modules.homeManager.herdr = { pkgs, ... }: {
-    home.packages = [ pkgs.herdr ];
+  flake.modules.homeManager.herdr =
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
+    {
+      home.packages = [ pkgs.herdr ];
 
-    xdg.configFile."herdr/config.toml".text = ''
-      [keys]
-      prefix = "ctrl+space"
-    '';
-  };
+      # Keep the file writable for Herdr's Settings UI.
+      home.activation.mergeHerdrConfig = lib.hm.dag.entryAfter [ "linkGeneration" ] (
+        lib.hm.generators.mkImpureConfigMerger {
+          inherit pkgs;
+          format = "toml";
+          empty = "{}";
+          jqOperation = "$dynamic * $static";
+          path = "${config.xdg.configHome}/herdr/config.toml";
+          staticSettings = (pkgs.formats.toml { }).generate "herdr-settings.toml" {
+            keys.prefix = "ctrl+space";
+          };
+        }
+      );
+    };
 }
