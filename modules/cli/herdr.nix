@@ -18,7 +18,11 @@
           jqOperation = "$dynamic * $static";
           path = "${config.xdg.configHome}/herdr/config.toml";
           staticSettings = (pkgs.formats.toml { }).generate "herdr-settings.toml" {
-            keys.prefix = "ctrl+space";
+            keys = {
+              prefix = "ctrl+space";
+              navigate_workspace_up = "k";
+              navigate_workspace_down = "j";
+            };
           };
         }
       );
