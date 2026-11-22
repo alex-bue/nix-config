@@ -73,8 +73,9 @@ assets beside their owning aspect.
   anything. Keep `main` free of feature commits.
 - Group related edits into coherent, validated local commits. When the user
   asks to publish, push the feature branch and open a PR against `main` rather
-  than pushing directly to `main`. Merge the PR only when requested and after
-  required checks pass.
+  than pushing directly to `main`. For ready PRs, queue a squash auto-merge
+  (`gh pr merge --auto --squash`) so GitHub waits for required checks. Leave
+  draft or review-only PRs unqueued.
 - Match the concise, usually imperative lowercase commit style in history.
 - Keep unrelated formatting, input updates, and behavior changes in separate
   commits.
