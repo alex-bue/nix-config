@@ -65,6 +65,16 @@ assets beside their owning aspect.
 
 ## Commits and pull requests
 
+- Before editing, check `git status --short -b` and the current branch. For a
+  new task, fetch `origin` and start a `feature/<short-topic>` branch from
+  `origin/main`. Reuse an existing branch only for follow-up work on its topic.
+- If the current checkout has unrelated changes or local commits, start the
+  new branch in a separate `git worktree` instead of stashing or resetting
+  anything. Keep `main` free of feature commits.
+- Group related edits into coherent, validated local commits. When the user
+  asks to publish, push the feature branch and open a PR against `main` rather
+  than pushing directly to `main`. Merge the PR only when requested and after
+  required checks pass.
 - Match the concise, usually imperative lowercase commit style in history.
 - Keep unrelated formatting, input updates, and behavior changes in separate
   commits.
