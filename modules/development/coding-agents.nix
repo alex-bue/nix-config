@@ -3,6 +3,7 @@
     home.packages = with pkgs; [
       codex
       opencode
+      pi-coding-agent
     ];
   };
 }

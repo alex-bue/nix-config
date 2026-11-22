@@ -16,6 +16,7 @@ in
       homeManager.nh
       homeManager.yazi
       homeManager.tmux
+      homeManager.herdr
       homeManager.coding-agents
       homeManager.repository-tools
       homeManager.python
